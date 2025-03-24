@@ -88,7 +88,7 @@ void TorqueResidual::before(mc_control::MCGlobalController & controller)
     if (residual[i] > residual_high_[i] || residual[i] < residual_low_[i])
     {
       obstacle_detected_ = true;
-      mc_rtc::log::info("[Torque Residual] Obstacle detected on joint {}", i);
+      if(activate_verbose) mc_rtc::log::info("[Torque Residual] Obstacle detected on joint {}", i);
       if (collision_stop_activated_)
       {
         ctl.controller().datastore().get<bool>("Obstacle detected") = obstacle_detected_;
@@ -158,14 +158,15 @@ void TorqueResidual::addGui(mc_control::MCGlobalController & controller)
         this->residual.setZero();
         this->k_obs = k;
       }),
-    mc_rtc::gui::NumberInput("Residual shown", [this]() { return residual_shown_; },
+    mc_rtc::gui::IntegerInput("Residual shown", [this]() { return residual_shown_; },
       [this](int r) 
       {
         this->residual_shown_ = r;
       }),
     mc_rtc::gui::Button("Add plot", [this]() { return activate_plot_ = true; }),
     // Add checkbox to activate the collision stop
-    mc_rtc::gui::Checkbox("Collision stop", collision_stop_activated_), 
+    mc_rtc::gui::Checkbox("Collision stop", collision_stop_activated_),
+    mc_rtc::gui::Checkbox("Verbose", activate_verbose), 
     // Add Threshold offset input
     mc_rtc::gui::NumberInput("Threshold offset", [this](){return this->threshold_offset_;},
         [this](double offset)
