@@ -1,0 +1,5 @@
+---
+torque_residual:
+  k_obs: 20
+  threshold_offset: 10.0
+  threshold_filtering: 0.005
