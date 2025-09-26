@@ -31,7 +31,11 @@ void TorqueResidual::init(mc_control::MCGlobalController & controller, const mc_
 
   k_obs = plugin_config("k_obs", 10.0);
   threshold_filtering_ = plugin_config("threshold_filtering", 0.05);
-  threshold_offset_ = plugin_config("threshold_offset", 2.0);
+  threshold_offset_ = plugin_config("threshold_offset");
+  if(threshold_offset_.size() != jointNumber)
+  {
+    threshold_offset_ = Eigen::VectorXd::Constant(jointNumber, 10.0);
+  }
   lpf_threshold_.setValues(threshold_offset_, threshold_filtering_, jointNumber);
 
   inertiaMatrix.resize(jointNumber, jointNumber);
@@ -168,8 +172,9 @@ void TorqueResidual::addGui(mc_control::MCGlobalController & controller)
     mc_rtc::gui::Checkbox("Collision stop", collision_stop_activated_),
     mc_rtc::gui::Checkbox("Verbose", activate_verbose), 
     // Add Threshold offset input
-    mc_rtc::gui::NumberInput("Threshold offset", [this](){return this->threshold_offset_;},
-        [this](double offset)
+    mc_rtc::gui::ArrayInput("Threshold offset", {"q_0", "q_1", "q_2", "q_3", "q_4", "q_5", "q_6"}, 
+      [this](){return this->threshold_offset_;},
+        [this](const Eigen::VectorXd & offset)
       { 
         threshold_offset_ = offset;
         lpf_threshold_.setOffset(threshold_offset_); 

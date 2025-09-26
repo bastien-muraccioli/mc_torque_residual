@@ -1,4 +1,4 @@
-name: CI of NewPlugin
+name: CI of TorqueResidual
 
 on:
   push:

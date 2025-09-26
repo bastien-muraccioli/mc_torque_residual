@@ -54,7 +54,7 @@ private:
   Eigen::MatrixXd inertiaMatrix;
 
   LpfThreshold lpf_threshold_;
-  double threshold_offset_;
+  Eigen::VectorXd threshold_offset_;
   double threshold_filtering_;
   Eigen::VectorXd residual_high_;
   Eigen::VectorXd residual_low_;
@@ -64,7 +64,7 @@ private:
   bool collision_stop_activated_ = false;
   // bool collision_stop_activated_zurlo_ = false;
   bool obstacle_detected_ = false;
-  bool activate_verbose = true;
+  bool activate_verbose = false;
 };
 
 } // namespace mc_plugin
